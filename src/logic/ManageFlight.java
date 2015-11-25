@@ -20,39 +20,42 @@ import java.util.StringTokenizer;
  * @author Priyanjit Dey
  */
 public class ManageFlight implements LogicInterface {
-    /*
-    ticketNo=Number of passengers. src=Source. departDate=Date of journey. dayOfWeek=Day of Journey
-    International flight valid through firstDate to lastDate
-    */
+    
     BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
     BookingManager bm=new BookingManager();
     
-    private int ticketNo;
-    private String src,dayOfWeek;
-    private LocalDate departDate;
-    final DateTimeFormatter dtf, tmf;
-    final LocalDate firstDate;
-    final LocalDate lastDate;
-    final LocalTime temptime;
-    private ArrayList<Flight> SpiceJet;
-    private ArrayList<Flight> SilkAir;
-    private ArrayList<Flight> flightFoundSpice,flightFoundSilk;
-    private ArrayList<String> bookedFlightSpice,bookedFlightSilk;
-    private ArrayList<String> noSilk,noSpice;
-    private boolean InputSuccess, bookNext;
-
+    /*
+    **************************DECLARATION OF VARIABLES********************************
+    */
+    
+    private int ticketNo;                             //Number of Passengers
+    private String src,dayOfWeek;                     //Source, Day of Journey
+    private LocalDate departDate;                     //Date of Journey
+    final DateTimeFormatter dtf, tmf;                 //Formatters
+    public final LocalDate firstDate;                        //Valid From
+    public final LocalDate lastDate;                         //Valid Upto
+    private ArrayList<Flight> SpiceJet;               //Stores list of SpiceJet Flights
+    private ArrayList<Flight> SilkAir;                //Store list of SilkAir Flights
+    private ArrayList<Flight> flightFoundSpice,flightFoundSilk;             //Stores Flights matching the given condtions
+    private ArrayList<String> bookedFlightSpice,bookedFlightSilk;           //Stores booked History of Files
+    private ArrayList<String> noSilk,noSpice;                               //Number of passengers in new booked ticket
+    private boolean InputSuccess, bookNext;                                 
+    //********************************END OF DECLARATION********************************
      
     public ManageFlight() {
         dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         tmf=DateTimeFormatter.ISO_TIME;
-        firstDate = LocalDate.parse("2015-03-29",dtf);
+        firstDate = LocalDate.parse("2015-10-01",dtf);
         lastDate = LocalDate.parse("2015-10-25",dtf);
-        temptime = LocalTime.parse("21:00:00",tmf);
         SpiceJet = new ArrayList<>();
         SilkAir = new ArrayList<>();
     }
+    
+    
     /*
-    Input Validation is done in this method.
+    ***********************************INPUT*******************************************
+    ***********************************************************************************
+    checkInput: Checks if the information provided are correct and within range.
     */
     boolean checkInput(){
         if(ticketNo>10 || ticketNo<1){
@@ -70,7 +73,7 @@ public class ManageFlight implements LogicInterface {
         return true;
     }
     /*
-    Ensure successful input of data from user.
+    takeInput: Takes Input from user and displays the menu.
     */
     boolean takeInput(){
         String s;
@@ -93,8 +96,27 @@ public class ManageFlight implements LogicInterface {
         }
         return true;
     }
+    /*
+    To continue booking or not.
+    */
+    private boolean bookNext(){
+        int ch;
+        try{
+            System.out.print("Please Selct your Choice:\n1.Book Another Ticket\n2.Exit\n");
+            ch=Integer.parseInt(br.readLine());
+            return ch==1;
+        }catch(IOException | NumberFormatException e){
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+    //*********************************END OF INPUT**********************************
+    
+    
     /**
-     * Input is taken here
+     ***********************************BOOKING*************************************
+     *******************************************************************************
+     * confirmBook: Books the ticket as per the information provided by the user.
      */
     
     @Override
@@ -104,7 +126,6 @@ public class ManageFlight implements LogicInterface {
             int confirm;
             confirm = (mode == 0)? Integer.parseInt(br.readLine().trim()): 1;
             Flight flight;
-            String id;
             if(confirm==1){
                 flight=flightFoundSpice.get(ch);
                 bm.writeFileSpice(flight.getFlightNumber(),noSpice.get(ch),ticketNo+"");
@@ -116,10 +137,13 @@ public class ManageFlight implements LogicInterface {
             System.out.println(e.getMessage());
         }
     }
+    //***********************************END OF BOOKING*****************************************
     
     
     /*
-    Display the search results.
+    ***************************************DISPLAY FLIGHT INFO*************************************
+    ***********************************************************************************************
+    showList: Responsible for showing the information about the flights matching the requirements of the user.
     */
     public void showList(){
         if(flightFoundSpice.isEmpty()){
@@ -148,8 +172,12 @@ public class ManageFlight implements LogicInterface {
             }
         }
     }
+    //******************************END OF DISPLAY FLIGHT INFO****************************************
+    
     /*
-    Date/Time Manipulation
+    **********************************DATE/TIME MANIPULATION******************************************
+    **************************************************************************************************
+    makeDate: converts the date portion of a Calendar object into String.
     */
     String makeDate(Calendar cal){
         String temp,y,m,d;
@@ -158,65 +186,105 @@ public class ManageFlight implements LogicInterface {
         y=yy+"";
         if(mm<10){
             m="0"+mm+"";
-        }
-        else m=mm+"";
+        }else m=mm+"";
         
         if(dd<10){
             d="0"+dd+"";
-        }
-        else d=dd+"";
+        }else d=dd+"";
         
         temp=y+"-"+m+"-"+d;
         return temp;
     }
+    /*
+    setDate(LocalDate,Localtime): converts a LocalDate and a Localtime Object into Calendar object
+    */
     Calendar setDate(LocalDate dt,LocalTime tt){
         Calendar cal=Calendar.getInstance();
         cal.set(dt.getYear(),dt.getMonthValue()-1,dt.getDayOfMonth(),tt.getHour(),tt.getMinute(),tt.getSecond());
         return cal;
     }
+    /*
+    setdate(Calendar,LocalTime): set the time of a Calendar object as that of a LocalTime object
+    */
     Calendar setDate(Calendar dt,LocalTime tt){
         Calendar cal=Calendar.getInstance();
         cal.set(dt.get(Calendar.YEAR),dt.get(Calendar.MONTH),dt.get(Calendar.DAY_OF_MONTH),tt.getHour(),tt.getMinute(),tt.getSecond());
         return cal;
     }
+    //**********************************END OF DATE/TIME MANIPULATION*******************************
+    
+    
     /*
-    Check Available Tickets
+    **********************************CHECK AVAILABILITY**********************************
+    **************************************************************************************
+    checkAvailibitySpice: checks the number of tickets available on a particular date on a SpiceJet Flight.
     */
     int checkAvailabilitySpice(String flightNo,String depDate){
-        int tckt=15,ftckt,i,cnt=0; String tempFlight,id,date;
+        int tckt=15,bookedTckt,iterSpice,totalBookedTckt=0; String tempFlight,id,date;
         StringTokenizer st=null;
-        for(i=0;i<bookedFlightSpice.size();i++){
-            tempFlight=bookedFlightSpice.get(i);
+        for(iterSpice=0;iterSpice<bookedFlightSpice.size();iterSpice++){
+            tempFlight=bookedFlightSpice.get(iterSpice);
             st=new StringTokenizer(tempFlight,"|");
             id=st.nextToken().trim();date=st.nextToken().trim();
             if(id.equals(flightNo.trim()) && depDate.equals(date.trim())){
-                ftckt=Integer.parseInt(st.nextToken().trim());cnt+=ftckt;
+                bookedTckt=Integer.parseInt(st.nextToken().trim());
+                totalBookedTckt+=bookedTckt;
             }
         }
-        return tckt-cnt;
+        return tckt-totalBookedTckt;
     }
+    /*
+    checkAvailabilitySilk: checks the number of tickets available on a particular date on a SilkAir Flight.
+    */
     int checkAvailabilitySilk(String flightNo,String depDate){
-        int tckt=15,ftckt,i,cnt=0; String tempFlight,id,date;
+        int tckt=15,bookedTckt,iterSilk,totalBookedTckt=0; String tempFlight,id,date;
         StringTokenizer st=null;
-        for(i=0;i<bookedFlightSilk.size();i++){
-            tempFlight=bookedFlightSilk.get(i);
+        for(iterSilk=0;iterSilk<bookedFlightSilk.size();iterSilk++){
+            tempFlight=bookedFlightSilk.get(iterSilk);
             st=new StringTokenizer(tempFlight,"|");
             id=st.nextToken().trim();date=st.nextToken().trim();
             if(id.equals(flightNo) && date.equals(depDate)){
-                ftckt=Integer.parseInt(st.nextToken().trim());cnt+=ftckt;
+                bookedTckt=Integer.parseInt(st.nextToken().trim());
+                totalBookedTckt+=bookedTckt;
             }
         }
-        return tckt-cnt;
+        return tckt-totalBookedTckt;
+    }
+    //*********************************END OF CHECK AVAILABILITY**************************************
+    
+    
+    /*
+    **************************************SEARCH FUNCTIONS***********************************************
+    *****************************************************************************************************
+    getFinalFlightList: Checks if the two selected flights run on same day of week and stores information accordingly.
+    */
+    void getFinalFlightList(Flight curFlightSpice,Flight curFlightSilk,Calendar finalDate){
+        String weekdaysilk,day;
+        LocalDate dayweeksilk;
+        int tcktAvail;
+        weekdaysilk=makeDate(finalDate);
+        dayweeksilk=LocalDate.parse(weekdaysilk,dtf);
+        day=dayweeksilk.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        for(String srr:curFlightSilk.getDaysOfWeek()){
+            if(day.equals(srr)){
+                tcktAvail=checkAvailabilitySilk(curFlightSilk.getFlightNumber(),makeDate(finalDate));
+                if(tcktAvail>=ticketNo){
+                    flightFoundSilk.add(curFlightSilk);noSpice.add(departDate+"");
+                    flightFoundSpice.add(curFlightSpice);noSilk.add(makeDate(finalDate));
+                    break;
+                }
+            }   
+        }
     }
     /*
-    Search available flights based on given information.
+    searchFlightSilk: Searches for a SilkAir Flight matching the user requirements. If found, it calls getFinalFlight method
+                      for making final list of flights found.
     */
     void searchFlightSilk(Flight curFlightSpice){
         Flight curFlightSilk;
-        int j,tcktAvail;
+        int iterSilk;
         Calendar begDate,endDate,tempDate1,tempDate2;
-        LocalDate dayweeksilk,checkBeg,checkEnd;
-        String weekdaysilk,day;
+        LocalDate checkBeg,checkEnd;
         LocalTime flightTime,auxFlightTime;
         flightTime=curFlightSpice.getArrivalTime();
         
@@ -230,49 +298,28 @@ public class ManageFlight implements LogicInterface {
                 endDate.set(departDate.getYear(),departDate.getMonthValue()-1,departDate.getDayOfMonth(),23,59,59);
             }
             
-            for(j=0;j<SilkAir.size();j++){
-                curFlightSilk=SilkAir.get(j);
+            for(iterSilk=0;iterSilk<SilkAir.size();iterSilk++){
+                curFlightSilk=SilkAir.get(iterSilk);
                 if(curFlightSpice.getArrivalCity().equals(curFlightSilk.getDepartureCity())){
                     auxFlightTime=curFlightSilk.getDepartureTime();
                     tempDate1=setDate(begDate,auxFlightTime);tempDate2=setDate(endDate,auxFlightTime);
                     
                     if((tempDate1.before(endDate) && tempDate1.after(begDate))){
-                        weekdaysilk=makeDate(tempDate1);
-                        dayweeksilk=LocalDate.parse(weekdaysilk,dtf);
-                        day=dayweeksilk.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-                        for(String srr:curFlightSilk.getDaysOfWeek()){
-                            if(day.equals(srr)){
-                                tcktAvail=checkAvailabilitySilk(curFlightSilk.getFlightNumber(),makeDate(tempDate1));
-                                if(tcktAvail>=ticketNo){
-                                    flightFoundSilk.add(curFlightSilk);noSpice.add(departDate+"");
-                                    flightFoundSpice.add(curFlightSpice);noSilk.add(makeDate(tempDate1));
-                                    break;
-                                }
-                            }   
-                        }
+                        getFinalFlightList(curFlightSpice,curFlightSilk,tempDate1);
                     }
                     
                     if(tempDate1.compareTo(tempDate2)!=0 && (tempDate2.before(endDate) && tempDate2.after(begDate))){
-                        weekdaysilk=makeDate(tempDate2);
-                        dayweeksilk=LocalDate.parse(weekdaysilk,dtf);
-                        day=dayweeksilk.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-                        for(String srr:curFlightSilk.getDaysOfWeek()){
-                            if(day.equals(srr)){
-                                tcktAvail=checkAvailabilitySilk(curFlightSilk.getFlightNumber(),makeDate(tempDate2));
-                                if(tcktAvail>=ticketNo){
-                                    flightFoundSilk.add(curFlightSilk);noSpice.add(departDate+"");
-                                    flightFoundSpice.add(curFlightSpice);noSilk.add(makeDate(tempDate2));
-                                    break;
-                                }
-                            } 
-                        }
+                        getFinalFlightList(curFlightSpice,curFlightSilk,tempDate2);
                     }
-                    
                 }
             }
         }
     }
     
+    /*
+    searchFlight: search the available SpiceJet Flights according to the given conditions 
+                  and calls searchFlightSilk for searching SilkAir Flights
+    */
     @Override
     public void searchFlight(){
         flightFoundSpice=new ArrayList<>();
@@ -281,18 +328,19 @@ public class ManageFlight implements LogicInterface {
         
         Flight curFlightSpice;
         LocalDate arDate[];
-        int i,ticketAvailable;
+        int iterSpice,ticketAvailable;
         dayOfWeek=departDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
         
         bookedFlightSilk=bm.readFileSilk();
         bookedFlightSpice=bm.readFileSpice();
         
-        for(i=0;i<SpiceJet.size();i++){
-            curFlightSpice=SpiceJet.get(i);
+        for(iterSpice=0;iterSpice<SpiceJet.size();iterSpice++){
+            curFlightSpice=SpiceJet.get(iterSpice);
             arDate=curFlightSpice.getEffectiveDate();
             
             if(src.equals(curFlightSpice.getDepartureCity())){
-                if((departDate.isAfter(arDate[0]) && departDate.isBefore(arDate[1])) || departDate.isEqual(arDate[0]) || departDate.isEqual(arDate[1])){
+                if((departDate.isAfter(arDate[0]) && departDate.isBefore(arDate[1])) 
+                || departDate.isEqual(arDate[0]) || departDate.isEqual(arDate[1])){
                     for(String sr:curFlightSpice.getDaysOfWeek()){
                         if(dayOfWeek.equals(sr)){
                             ticketAvailable=checkAvailabilitySpice(curFlightSpice.getFlightNumber(),departDate+"");
@@ -304,11 +352,15 @@ public class ManageFlight implements LogicInterface {
                 }
             }
         }
-        //showList();
     }
+    //******************************END OF SEARCH FUNCTIONS***************************************
+    
+    
     
     /*
-    Initialisation and retrieving flight information from the DataManager Class.
+    *********************************INFORMATION RETRIEVAL/CLEAR*********************************
+    *********************************************************************************************
+    getValues: retrieves the value of all the flights from the .csv files.
     */
     void getValues(String[] args){
         DataManager dm=new DataManager();
@@ -321,33 +373,22 @@ public class ManageFlight implements LogicInterface {
         SilkAir=manager.getFlightListSilkAir();
         SpiceJet=manager.getFlightListSpiceJet();
     }
-    
     /*
-    To continue booking or not.
+    clearEverything: responsible for clearing all the Arraylists.
     */
-    private boolean bookNext(){
-        int ch;
-        try{
-            System.out.print("Please Selct your Choice:\n1.Book Another Ticket\n2.Exit\n");
-            ch=Integer.parseInt(br.readLine());
-            return ch==1;
-        }catch(IOException | NumberFormatException e){
-            System.out.println(e.getMessage());
-        }
-        return false;
-    }
-    
     void clearEverything(){
         flightFoundSilk.clear();
         flightFoundSpice.clear();
         bookedFlightSpice.clear();bookedFlightSilk.clear();
         noSilk.clear();noSpice.clear();
     }
-    
     public void init(DataManager manager) {
         getValues(manager);
         
     }
+    //****************************END OF INFORMATION RETRIEVAL/CLEAR********************************
+    
+    
     public void run() {
         
         while(true){
@@ -371,6 +412,7 @@ public class ManageFlight implements LogicInterface {
         ManageFlight mm=new ManageFlight();
         boolean InputSuccess;
         mm.getValues(args);
+        //mm.run();
         while(true){
             InputSuccess=mm.takeInput();
             if(InputSuccess==true){

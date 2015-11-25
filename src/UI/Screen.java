@@ -36,12 +36,12 @@ public class Screen extends javax.swing.JFrame {
     }
 
     /**
-     * Creates new form Screen and initializes all the variables
+     * Creates new form Screen and initialises all the variables
      */
     public void init() {
         initComponents();
-        source="DEL";
-        destination="SIN";
+        source="DELHI";
+        destination="SINGAPORE";
         via=" ";
         date=null;
         numberOfSeats=0;
@@ -887,8 +887,8 @@ public class Screen extends javax.swing.JFrame {
      */
     public int fillTable(String [][]dataInp,int count) {
         DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
-        for(int i =0;i<dataInp.length;i++){
-            model.addRow(dataInp[i]);
+        for (String[] dataInp1 : dataInp) {
+            model.addRow(dataInp1);
             this.countRows++;
         }
         return countRows;

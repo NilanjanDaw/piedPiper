@@ -15,6 +15,7 @@ import data.DataManager;
  * Abstract class for arbitrating between various display modes
  */
 public abstract class DisplayArbitrator implements FRSInterface {
+    
     protected DataManager dataManager;
     protected ManageFlight manageFlight;
     protected DisplayManager displayManager;

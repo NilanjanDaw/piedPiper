@@ -73,7 +73,9 @@ public class FRSManager {
             }
             
         } catch (IOException | NumberFormatException ex) {
-            Logger.getLogger(FRSManager.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Seems like an input error just occured! Shutting systems down");
+        } catch (Exception e) {
+            System.out.println("Seems like an unexpected error just occured! Shutting systems down");
         }
     }
 

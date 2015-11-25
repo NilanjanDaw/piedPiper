@@ -20,6 +20,11 @@ import java.util.logging.Logger;
  * @author Priyanjit Dey
  */
 public class BookingManager {
+    
+    /*
+    *******************************DECLARATION OF VARIABLES******************************
+    *************************************************************************************
+    */
     final String pathSilk="bookedSilk.csv";
     final String pathSpice="bookedSpice.csv";
     BufferedReader br=null;
@@ -27,7 +32,14 @@ public class BookingManager {
     File file=null,tempFile=null;
     ArrayList bookedSpice=new ArrayList<>();
     ArrayList bookedSilk=new ArrayList<>();
+    //****************************END OF DECLARATION************************************
     
+    
+    /*
+    *********************************CREATE FILE****************************************
+    ************************************************************************************
+    createNewFile: responsible for creating new files if the specified files are not present
+    */
     void createNewFile(String path){
         try{
             file=new File(path);
@@ -38,6 +50,14 @@ public class BookingManager {
             System.out.println(e.getMessage());
         }
     }
+    //****************************END OF CREATE FILE***************************************
+    
+    
+    /*
+    ********************************WRITE NEW RECORD**************************************
+    **************************************************************************************
+    writeFileSilk: responsible for writing the booked ticket information of SilkAir flight in file.
+    */
     public void writeFileSilk(String id,String depart,String tckt){
         String readInfo;
         try{
@@ -60,6 +80,9 @@ public class BookingManager {
         }
     }
     
+    /*
+    writeFileSpice: responsible for writing the booked ticket information of SpiceJet flight in file
+    */
     public void writeFileSpice(String id,String depart,String tckt){
         String readInfo;
         try{
@@ -81,6 +104,15 @@ public class BookingManager {
             }
         }
     }
+    //********************************END OF WRITE NEW RECORD***********************************
+    
+    
+    
+    /*
+    **********************************READ RECORDS FROM FILE************************************
+    ********************************************************************************************
+    readFileSilk: reads all the booked ticket information of SilkAir Flights
+    */
     public ArrayList<String> readFileSilk(){
         try{
             file=new File(pathSilk);
@@ -102,6 +134,9 @@ public class BookingManager {
         }
         return bookedSilk;
     }
+    /*
+    readFlightSpice: read all the booked ticket information of SpiceJet Flights
+    */
     public ArrayList<String> readFileSpice(){
         try{
             file=new File(pathSpice);
@@ -123,9 +158,19 @@ public class BookingManager {
         }
         return bookedSpice;
     }
+    //******************************END OF READ RECORD FROM FILE***********************************
+    
+    
+    
+    /*
+    *********************************INITIALIZE**********************************************
+    *****************************************************************************************
+    initialize: creates two files for storing booked ticket information of SilkAir and Spice Flights respectively
+    */
     public void initialize(){
         createNewFile(pathSpice);
         createNewFile(pathSilk);
     }
+    //***************************END OF INITIALIZE*******************************************
     
 }

@@ -40,7 +40,7 @@ PrintButton made functional in Ticket Window.
 Path of data files to be passed as arguments, hence static path variable added in the GUI counterpart.
 Time added to the ticket generated.
 Version 1.1.1:
-Modification Author: Anuddep Ghosh
+Modification Author: Anudeep Ghosh
 DisplayManager class: Documentation added
 
 Modification Author: Nilanjan Daw
@@ -55,3 +55,11 @@ Classes added: FRSInterface.java
                DisplayInterface.java
                DataInterface.java
                LogicInterface.java
+
+Version 2.0.1:
+Modification Author: Priyanjit Dey
+logic package: Documentation added
+Modification Author: Nilanjan Daw
+Bug Fixes & VCS addition: Fixed the deadly Delhi Bug.
+                          Added the GIT VCS.
+                          Various other bug fixes. CLI version made more informative

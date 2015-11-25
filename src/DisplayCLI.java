@@ -49,13 +49,17 @@ public class DisplayCLI extends DisplayArbitrator {
     public void run() {
         try {
             if(takeInput()) {
+                System.out.println("Verification sucessful! Proceeding to search:");
                 manageFlight.searchFlight();
                 manageFlight.showList();
+            } else {
+                run();
             }
             if(bookNext())
                 run();
         } catch(Exception e) {
             System.out.println("CLI Mode error: "+e.getMessage());
+            System.out.println("Escaping sequence");
         }
         
     }
@@ -73,11 +77,27 @@ public class DisplayCLI extends DisplayArbitrator {
             System.out.println("Please enter the Date of Travel(yyyy-mm-dd):");
             s=reader.readLine();
             if(manageFlight != null) {
-                manageFlight.setDepartDate(LocalDate.parse(s,manageFlight.getDtf()));
+                LocalDate departureDate = LocalDate.parse(s,manageFlight.getDtf());
                 System.out.println("Please enter Source City (DELHI, MUMBAI or PUNE):");
-                manageFlight.setSrc(reader.readLine().trim().toUpperCase());
+                String city = reader.readLine().trim().toUpperCase();
                 System.out.print("Destination is Singapore.\nHow many tickets?(1-10)\n");
-                manageFlight.setTicketNo(Integer.parseInt(reader.readLine().trim()));
+                int numberOfTicket = Integer.parseInt(reader.readLine().trim());
+                System.out.println("You have entered the following details:\n"
+                        + "Departure City: " + city + "\n"
+                        + "Departure Date: " + departureDate + "\n"
+                        + "Number of Tickets: " + numberOfTicket + "\n"
+                        + "Verifying..."
+                );
+                if(checkInput(departureDate, city, numberOfTicket)) {
+                    manageFlight.setDepartDate(departureDate);
+                    manageFlight.setSrc(city);
+                    manageFlight.setTicketNo(numberOfTicket);
+                }
+                else {
+                    System.out.println("Seems like there was an input error!"
+                            + "\nPlease try again");
+                    return false;
+                }
             }
             return true;
         }
@@ -87,4 +107,26 @@ public class DisplayCLI extends DisplayArbitrator {
         }
     }
     
+    /**
+     * Method to verify inputs entered by the user
+     * @param departureDate The departure date entered by the user
+     * @param city The departure city entered by the user
+     * @param numberOfTicket The number of tickets entered by the user
+     * @return true if all inputs are valid, false otherwise
+     */
+    boolean checkInput(LocalDate departureDate, String city, int numberOfTicket){
+        if(numberOfTicket > 10 || numberOfTicket < 1){
+            System.out.println("Number of Passengers must be between 1-10");
+            return false;
+        }
+        if(!city.equalsIgnoreCase("DELHI") && !city.equalsIgnoreCase("MUMBAI") && !city.equalsIgnoreCase("PUNE") ){
+            System.out.println("No such source present.");
+            return false;
+        }
+        if(departureDate.isBefore(manageFlight.firstDate)==true || departureDate.isAfter(manageFlight.lastDate)==true){
+            System.out.println("Service available between 29-03-2015 to 24-10-2015.Please Re-enter:");
+            return false;
+        }
+        return true;
+    }  
 }
