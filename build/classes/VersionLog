@@ -1,0 +1,57 @@
+
+=========================================================================================================2.0============
+    ....      ..        .                  ..           ....      ..        .                                          
+  +^""888h. ~"888h     @88>              dF           +^""888h. ~"888h     @88>                                        
+ 8X.  ?8888X  8888f    %8P              '88bu.       8X.  ?8888X  8888f    %8P    .d``                       .u    .   
+'888x  8888X  8888~     .         .u    '*88888bu   '888x  8888X  8888~     .     @8Ne.   .u        .u     .d88B :@8c  
+'88888 8888X   "88x:  .@88u    ud8888.    ^"*8888N  '88888 8888X   "88x:  .@88u   %8888:u@88N    ud8888.  ="8888f8888r 
+ `8888 8888X  X88x.  ''888E` :888'8888.  beWE "888L  `8888 8888X  X88x.  ''888E`   `888I  888. :888'8888.   4888>'88"  
+   `*` 8888X '88888X   888E  d888 '88%"  888E  888E    `*` 8888X '88888X   888E     888I  888I d888 '88%"   4888> '    
+  ~`...8888X  "88888   888E  8888.+"     888E  888E   ~`...8888X  "88888   888E     888I  888I 8888.+"      4888>      
+   x8888888X.   `%8"   888E  8888L       888E  888F    x8888888X.   `%8"   888E   uW888L  888' 8888L       .d888L .+   
+  '%"*8888888h.   "    888&  '8888c. .+ .888N..888    '%"*8888888h.   "    888&  '*88888Nu88P  '8888c. .+  ^"8888*"    
+  ~    888888888!`     R888"  "88888%    `"888*""     ~    888888888!`     R888" ~ '88888F`     "88888%       "Y"      
+       X888^"""         ""      "YP'        ""             X888^"""         ""      888 ^         "YP'                 
+       `88f                                                `88f                     *8E                                
+        88                                                  88                      '8>                                
+        ""                                                  ""                       "                                 
+=========================================================================================================2.0============
+Version 1.1.0:
+Modification Author: Anudeep Ghosh
+code changed at line 59. of DisplayGUI class :      addition of an extra if() to
+                                                    check if the value returned
+                                                    by displayManager.showSearchResult()
+                                                    is true/false and accordingly
+                                                    proceed if flights are found,
+                                                    else re-run from initial screen.
+code changed at line 52. of DisplayManager class :  return type of method showSearchResult()
+                                                    is changed from void to boolean.
+                                                    
+No. of bookable seats is reduced from 15 to 10.
+
+code changed at line 903. of DisplayManager class : return type of method fillTable()
+                                                    is changed from void to int,
+                                                    which returns the number of
+                                                    flight options(aka rows in the jTable)
+                                                    formed.
+
+PrintButton made functional in Ticket Window.
+
+Path of data files to be passed as arguments, hence static path variable added in the GUI counterpart.
+Time added to the ticket generated.
+Version 1.1.1:
+Modification Author: Anuddep Ghosh
+DisplayManager class: Documentation added
+
+Modification Author: Nilanjan Daw
+DataManager class, Method init(): Path passed as arguments from FRSManager
+FRSManager class: Documentation added
+DataManager class: Documentation added
+
+Version 2.0.0:
+Modification Author: Nilanjan Daw
+Major structural upgrade: Interfaces added to all packages to aid future upgrades and also to increase modularity
+Classes added: FRSInterface.java
+               DisplayInterface.java
+               DataInterface.java
+               LogicInterface.java
