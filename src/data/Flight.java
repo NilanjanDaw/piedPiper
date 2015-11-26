@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 /**
  *
- * @author Nilanjan
+ * @author Prithviraj Dhar
  */
 public class Flight {
     

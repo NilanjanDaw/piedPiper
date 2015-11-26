@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
 
 /**
  *
- * @author Nilanjan
+ * @author Prithviraj Dhar
  */
 public class DataManager implements DataInterface {
     
@@ -160,7 +160,7 @@ public class DataManager implements DataInterface {
         /**
          * Start of Changed portion
          */
-        String departureCity = flightData.nextToken().toUpperCase();
+        String departureCity = flightData.nextToken().toUpperCase().trim();
         flight.setDepartureCity(
                 (data.length > 1) ? 
                         departureCity.substring(0,departureCity.length() - 6).trim() :
@@ -168,7 +168,7 @@ public class DataManager implements DataInterface {
         /**
          * end of changed portion
          */
-        flight.setArrivalCity((data.length > 1) ? data[1].toUpperCase() : flightData.nextToken());
+        flight.setArrivalCity((data.length > 1) ? data[1].toUpperCase() : flightData.nextToken().trim());
         String[] scheduleData = flightData.nextToken().split(",");
         ArrayList<String> schedule = new ArrayList<>();
         for (String scheduleData1 : scheduleData) {

@@ -102,7 +102,7 @@ public class ManageFlight implements LogicInterface {
     private boolean bookNext(){
         int ch;
         try{
-            System.out.print("Please Selct your Choice:\n1.Book Another Ticket\n2.Exit\n");
+            System.out.print("Please Select your Choice:\n1.Book Another Ticket\n2.Exit\n");
             ch=Integer.parseInt(br.readLine());
             return ch==1;
         }catch(IOException | NumberFormatException e){
@@ -122,7 +122,11 @@ public class ManageFlight implements LogicInterface {
     @Override
     public void confirmBook(int ch, int mode){
         try{
-            System.out.println("Press 1 to confirm. 0 to cancel");
+            if(ch >= flightFoundSilk.size()) {
+                System.out.println("Sorry there was an input error! Escaping");
+                return;
+            }
+            System.out.println("Press 1 to confirm. Any other key to cancel");
             int confirm;
             confirm = (mode == 0)? Integer.parseInt(br.readLine().trim()): 1;
             Flight flight;
@@ -132,9 +136,11 @@ public class ManageFlight implements LogicInterface {
                 flight=flightFoundSilk.get(ch);
                 bm.writeFileSilk(flight.getFlightNumber(),noSilk.get(ch),ticketNo+"");
                 System.out.println("Your Ticket is Booked.");
+            } else {
+                System.out.println("Cancelled booking");
             }
         }catch(IOException | NumberFormatException e){
-            System.out.println(e.getMessage());
+            System.out.println("Cancelled booking");
         }
     }
     //***********************************END OF BOOKING*****************************************

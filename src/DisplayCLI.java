@@ -31,11 +31,9 @@ public class DisplayCLI extends DisplayArbitrator {
      * @return true if choice is true, else false
      */
     private boolean bookNext(){
-        int ch;
         try{
-            System.out.print("Please Selct your Choice:\n1.Book Another Ticket\n2.Exit\n");
-            ch=Integer.parseInt(reader.readLine());
-            return ch==1;
+            System.out.print("Please Select your Choice:\n1.Book Another Ticket\nAny other key to Exit\n");
+            return reader.readLine().equalsIgnoreCase("1");
         }catch(IOException | NumberFormatException e){
             System.out.println(e.getMessage());
         }
@@ -124,7 +122,7 @@ public class DisplayCLI extends DisplayArbitrator {
             return false;
         }
         if(departureDate.isBefore(manageFlight.firstDate)==true || departureDate.isAfter(manageFlight.lastDate)==true){
-            System.out.println("Service available between 29-03-2015 to 24-10-2015.Please Re-enter:");
+            System.out.println("Service available between 01-10-2015 to 24-10-2015.Please Re-enter:");
             return false;
         }
         return true;

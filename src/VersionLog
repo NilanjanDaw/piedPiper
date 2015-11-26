@@ -64,3 +64,11 @@ Modification Author: Nilanjan Daw
 Bug Fixes & VCS addition: Fixed the deadly Delhi Bug.
                           Added the GIT VCS.
                           Various other bug fixes. CLI version made more informative
+
+Version 2.1.0:
+Modification Author: Nilanjan Daw
+Multiple Bug Fixes: Implementation of the Pune Fix
+                    Multiple CLI & GUI mode fixes:
+                        ClI: Warnings changed, Input checking made more rigorous
+Modification Author: Anudeep Ghosh
+                        GUI: Name tag error fixed, Ticket spinner bug fixed

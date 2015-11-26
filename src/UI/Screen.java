@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -56,10 +57,19 @@ public class Screen extends javax.swing.JFrame {
                 if(name.matches("^[a-z A-Z]+$")&&!((name.trim()).equalsIgnoreCase("")))
                     confirmButton.setEnabled(true);
                 else{
-                    if(!name.trim().equals(""))
-                        DisplayManager.infoBox("Name should consist\nonly letters\nnumbers/special characters not allowed!", "");
+                    if(!name.trim().equals("")){
+                        DisplayManager.infoBox("Name should consist of\nonly letters.\nNumbers/special characters not allowed!", "");
+                        jTextField1.setText("");
+                    }
                     confirmButton.setEnabled(false);
                 }
+            }
+        });
+               
+        jSpinner1.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                numberOfSeats=(int)jSpinner1.getValue();
             }
         });
         
@@ -78,10 +88,6 @@ public class Screen extends javax.swing.JFrame {
                 if(e.getKeyCode()==KeyEvent.VK_ENTER)
                     okButtonActionPerformed(null);
             }
-        });
-        
-        jSpinner1.addChangeListener((ChangeEvent e) -> {
-            numberOfSeats=(int)jSpinner1.getValue();
         });
         
         jTable1.addMouseListener(new MouseAdapter() {
@@ -856,7 +862,8 @@ public class Screen extends javax.swing.JFrame {
                 DisplayManager.infoBox("Select a valid date :\nbetween 1st Oct and 24th Oct.", "");
             }
         }else{
-            DisplayManager.infoBox("Number of Seats cannot be zero.", "");
+            DisplayManager.infoBox("Number of Seats has to be greater than 0 and less than 10."
+                    + "\nShould not contain letters/special symbols", "");
         }
     }//GEN-LAST:event_okButtonActionPerformed
     /**
@@ -954,9 +961,9 @@ public class Screen extends javax.swing.JFrame {
             this.jTabbedPane.setEnabledAt(1,false);
             selectedRow = this.jTable1.getSelectedRow();
             arrivalDom=(String)this.jTable1.getModel().getValueAt(selectedRow,2);
-            departDom=(String)this.jTable1.getModel().getValueAt(selectedRow,1);
+            departDom=(String)this.jTable1.getModel().getValueAt(selectedRow, 1);
             arrivalInt=(String)this.jTable1.getModel().getValueAt(selectedRow,6);
-            departInt=(String)this.jTable1.getModel().getValueAt(selectedRow,5);
+            departInt=(String)this.jTable1.getModel().getValueAt(selectedRow, 5);
             flightDom=(String)this.jTable1.getModel().getValueAt(selectedRow, 0);
             flightInt=(String)this.jTable1.getModel().getValueAt(selectedRow, 4);
             jLabel12.setText(source);
